@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+    nav button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    nav button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    #logoutBtn {
+      background-color: #dc3545;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    #logoutBtn:hover {
+      background-color: #c82333;
+    }
+    main {
+      padding: 2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav style="display: flex; align-items: center; gap: 1rem; color: white; font-weight: bold; font-size: 1.2rem;">
+      <span>ZUDIO</span>
+      <button id="homeBtn" style="background: transparent; border: none; color: white; font-size: 1rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px; transition: background-color 0.3s ease;">Home</button>
+      <button id="profileBtn" style="background: transparent; border: none; color: white; font-size: 1rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px; transition: background-color 0.3s ease;">Profile</button>
+      <button id="mensWearBtn">Mens Wear</button>
+      <button id="womensWearBtn">Womens Wear</button>
+      <button id="kidsBoysBtn">Kids Wear (Boys)</button>
+      <button id="kidsGirlsBtn">Kids Wear (Girls)</button>
+    </nav>
+    <div id="userProfileDisplay" style="display: flex; align-items: center; color: white; margin-left: 1rem; font-weight: bold; align-self: center;">
+      <img id="userPhoto" src="" alt="User Photo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px; display: none;" />
+      <span id="userNameDisplay"></span>
+    </div>
+    <button id="logoutBtn">Logout</button>
+  </header>
+  <main>
+    <h1>Welcome to ZUDIO</h1>
+    <p>Select a category from the header above.</p>
+  </main>
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+  <script>
+      const firebaseConfig = {
+    apiKey: "AIzaSyCkKbpaSIvahjrX6FAKL8FwxFs4XdxqDhU",
+    authDomain: "shopping-acdb6.firebaseapp.com",
+    projectId: "shopping-acdb6",
+    storageBucket: "shopping-acdb6.firebasestorage.app",
+    messagingSenderId: "474724595835",
+    appId: "1:474724595835:web:c68e3f315c5736f14a4ade",
+    measurementId: "G-G939567N5D"
+  };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Redirect to login if not logged in
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        const userRef = firebase.database().ref('users/' + user.uid);
+        userRef.once('value').then(snapshot => {
+          const data = snapshot.val();
+          const userNameDisplay = document.getElementById('userNameDisplay');
+          if (data && data.name) {
+            userNameDisplay.textContent = `Hello, ${data.name}`;
+          } else {
+            userNameDisplay.textContent = '';
+          }
+          if (data && data.photoUrl) {
+            const userPhoto = document.getElementById('userPhoto');
+            userPhoto.src = data.photoUrl;
+            userPhoto.style.display = 'block';
+          }
+        });
+      }
+    });
+
+    // Button click handlers
+    document.getElementById('profileBtn').addEventListener('click', () => {
+      window.location.href = 'profile.html';
+    });
+    document.getElementById('mensWearBtn').addEventListener('click', () => {
+      window.location.href = 'mens_wear.html';
+    });
+    document.getElementById('womensWearBtn').addEventListener('click', () => {
+      window.location.href = 'womens.html';
+    });
+    document.getElementById('kidsBoysBtn').addEventListener('click', () => {
+      window.location.href = 'kids_boys.html';
+    });
+    document.getElementById('kidsGirlsBtn').addEventListener('click', () => {
+      window.location.href = 'kids_girls.html';
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>

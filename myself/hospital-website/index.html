@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital Website - Home</title>
+  <link rel="stylesheet" href="styles/home.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="scripts/firebase-config.js" defer></script>
+  <script src="scripts/home.js" defer></script>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+  <header>
+    <h1>Welcome to Our Hospital</h1>
+    <p>Your health is our priority.</p>
+  </header>
+  <section class="features">
+    <div class="feature animate-fadein">
+      <h2>24/7 Emergency</h2>
+      <p>We provide round-the-clock emergency services.</p>
+    </div>
+    <div class="feature animate-slidein">
+      <h2>Expert Doctors</h2>
+      <p>Our team consists of highly qualified specialists.</p>
+    </div>
+    <div class="feature animate-zoomin">
+      <h2>Advanced Technology</h2>
+      <p>We use the latest medical technology for diagnosis and treatment.</p>
+    </div>
+  </section>
+  <footer>
+    <p>&copy; 2024 Hospital Website. All rights reserved.</p>
+  </footer>
+</body>
+</html>

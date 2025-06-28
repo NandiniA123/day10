@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4CAF50, #81C784);
+    color: #333;
+    padding: 40px;
+}
+h1 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px #000;
+}
+form {
+    background: #fff;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #81C784;
+    outline: none;
+}
+button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background: #81C784;
+}
+p.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 400px;
+    margin: 20px auto 0 auto;
+    text-align: center;
+}
+p.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 400px;
+    margin: 20px auto 0 auto;
+    text-align: center;
+}

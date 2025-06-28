@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kids Boys Wear User Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+    nav button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    nav button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    #logoutBtn {
+      background-color: #dc3545;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    #logoutBtn:hover {
+      background-color: #c82333;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .items-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .item {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: calc(20% - 1rem);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .item h3 {
+      margin: 0 0 0.5rem 0;
+    }
+    .item p {
+      margin: 0 0 0.5rem 0;
+    }
+    .item .price {
+      font-weight: bold;
+      color: #007bff;
+    }
+    .item button {
+      margin: 0.25rem 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .buy-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .buy-btn:hover {
+      background-color: #218838;
+    }
+    .cart-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .cart-btn:hover {
+      background-color: #0056b3;
+    }
+    .message {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav style="display: flex; align-items: center; gap: 1rem; color: white; font-weight: bold; font-size: 1.2rem;">
+      <span>ZUDIO</span>
+      <button id="homeBtn" style="background: transparent; border: none; color: white; font-size: 1rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px; transition: background-color 0.3s ease;">Home</button>
+      <button id="mensWearBtn" style="background-color: #007bff; color: white; border-radius: 4px; padding: 0.5rem 1rem; border: none; cursor: pointer;">Mens Wear</button>
+      <button id="womensWearBtn" style="background-color: #007bff; color: white; border-radius: 4px; padding: 0.5rem 1rem; border: none; cursor: pointer;">Womens Wear</button>
+      <button id="kidsBoysBtn" style="background-color: #007bff; color: white; border-radius: 4px; padding: 0.5rem 1rem; border: none; cursor: pointer;">Kids Wear (Boys)</button>
+      <button id="kidsGirlsBtn" style="background-color: #007bff; color: white; border-radius: 4px; padding: 0.5rem 1rem; border: none; cursor: pointer;">Kids Wear (Girls)</button>
+      <button id="cartBtn" style="background-color: #ffc107; color: black; border-radius: 4px; padding: 0.5rem 1rem; border: none; cursor: pointer; margin-right: 1rem;">Cart</button>
+      <div id="userProfileDisplay" style="display: flex; align-items: center; color: white; margin-left: 1rem; font-weight: bold; align-self: center;">
+        <img id="userPhoto" src="" alt="User Photo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px; display: none;" />
+        <span id="userNameDisplay"></span>
+      </div>
+      <button id="logoutBtn" style="background-color: #dc3545; color: white; border-radius: 4px; padding: 0.5rem 1rem; border: none; cursor: pointer;">Logout</button>
+    </nav>
+  </header>
+
+  <script>
+    document.getElementById('cartBtn').addEventListener('click', () => {
+      window.location.href = 'cart.html';
+    });
+    document.getElementById('homeBtn').addEventListener('click', () => {
+      window.location.href = 'home.html';
+    });
+  </script>
+  <h2>Kids Boys Wear Items</h2>
+  <div class="items-container" id="itemsContainer">
+    <p class="message" id="loadingMessage">Loading items...</p>
+  </div>
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <!-- Firebase Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyCkKbpaSIvahjrX6FAKL8FwxFs4XdxqDhU",
+    authDomain: "shopping-acdb6.firebaseapp.com",
+    projectId: "shopping-acdb6",
+    storageBucket: "shopping-acdb6.firebasestorage.app",
+    messagingSenderId: "474724595835",
+    appId: "1:474724595835:web:c68e3f315c5736f14a4ade",
+    measurementId: "G-G939567N5D"
+  };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const itemsContainer = document.getElementById('itemsContainer');
+    const loadingMessage = document.getElementById('loadingMessage');
+
+    function displayItems(items) {
+      itemsContainer.innerHTML = '';
+      if (!items) {
+        itemsContainer.innerHTML = '<p class="message">No items found.</p>';
+        return;
+      }
+      Object.keys(items).forEach(key => {
+        const item = items[key];
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+        itemDiv.innerHTML = `
+          <h3>${item.name}</h3>
+          <p>${item.description}</p>
+          ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}" style="max-width:100%; height:auto; margin-bottom: 0.5rem; border-radius: 4px;" />` : ''}
+          <p class="price">$${item.price.toFixed(2)}</p>
+          <div>
+            <button class="buy-btn" data-key="${key}">Buy</button>
+            <button class="cart-btn" data-key="${key}">Add to Cart</button>
+          </div>
+        `;
+        itemsContainer.appendChild(itemDiv);
+      });
+    }
+
+    // Fetch kids boys wear items from Firebase Realtime Database
+    database.ref('kids_boys_wear').on('value', (snapshot) => {
+      const data = snapshot.val();
+      loadingMessage.style.display = 'none';
+      displayItems(data);
+
+      // Add event listeners for buy and cart buttons
+      setTimeout(() => {
+        document.querySelectorAll('.buy-btn').forEach(button => {
+          button.addEventListener('click', () => {
+            const key = button.getAttribute('data-key');
+            const item = data[key];
+            if (item) {
+              // Clear cart and add only this item for buy now
+              localStorage.setItem('shoppingCart', JSON.stringify([{...item, quantity: 1}]));
+              window.location.href = 'cart.html';
+            }
+          });
+        });
+        document.querySelectorAll('.cart-btn').forEach(button => {
+          button.addEventListener('click', () => {
+            const key = button.getAttribute('data-key');
+            const item = data[key];
+            if (item) {
+              let cart = localStorage.getItem('shoppingCart');
+              cart = cart ? JSON.parse(cart) : [];
+              const existingIndex = cart.findIndex(ci => ci.name === item.name);
+              if (existingIndex >= 0) {
+                cart[existingIndex].quantity += 1;
+              } else {
+                cart.push({...item, quantity: 1});
+              }
+              localStorage.setItem('shoppingCart', JSON.stringify(cart));
+              alert(`${item.name} added to cart.`);
+            }
+          });
+        });
+      }, 100);
+    }, (error) => {
+      loadingMessage.textContent = 'Error loading items: ' + error.message;
+    });
+
+    // Firebase Authentication for logout and navigation buttons
+    const auth = firebase.auth();
+
+    // Redirect to login if not logged in
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Button click handlers
+    document.getElementById('mensWearBtn').addEventListener('click', () => {
+      window.location.href = 'mens_wear.html';
+    });
+    document.getElementById('womensWearBtn').addEventListener('click', () => {
+      window.location.href = 'womens.html';
+    });
+    document.getElementById('kidsBoysBtn').addEventListener('click', () => {
+      window.location.href = 'kids_boys.html';
+    });
+    document.getElementById('kidsGirlsBtn').addEventListener('click', () => {
+      window.location.href = 'kids_girls.html';
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+
+  <script>
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const userRef = database.ref('users/' + user.uid);
+        userRef.once('value').then(snapshot => {
+          const data = snapshot.val();
+          const userNameDisplay = document.getElementById('userNameDisplay');
+          const userPhoto = document.getElementById('userPhoto');
+          if (data && data.name) {
+            userNameDisplay.textContent = `Hello, ${data.name}`;
+          } else {
+            userNameDisplay.textContent = '';
+          }
+          if (data && data.photoUrl) {
+            userPhoto.src = data.photoUrl;
+            userPhoto.style.display = 'block';
+          } else {
+            userPhoto.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

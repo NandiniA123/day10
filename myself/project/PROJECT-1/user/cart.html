@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shopping Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    .price {
+      font-weight: bold;
+      color: #007bff;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    .remove-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+    .remove-btn:hover {
+      background-color: #c82333;
+    }
+    .pay-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .pay-btn:hover {
+      background-color: #218838;
+    }
+    .empty-message {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 2rem;
+    }
+    .payment-section {
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h2>Your Shopping Cart</h2>
+  <button id="backBtn" style="margin-bottom: 1rem; padding: 0.5rem 1rem; border-radius: 4px; border: none; background-color: #007bff; color: white; cursor: pointer;">Back to Mens Wear</button>
+  <table id="cartTable">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Cart items will be inserted here -->
+    </tbody>
+  </table>
+  <div class="empty-message" id="emptyMessage" style="display:none;">Your cart is empty.</div>
+
+  <div class="payment-section" id="paymentSection" style="display:none;">
+    <h3>Payment Options</h3>
+    <label for="paymentMethod">Select Payment Method:</label>
+    <select id="paymentMethod">
+      <option value="credit_card">Credit Card</option>
+      <option value="paypal">PayPal</option>
+      <option value="upi">UPI</option>
+    </select>
+    <label for="cardNumber">Card Number:</label>
+    <input type="text" id="cardNumber" placeholder="Enter card number" />
+    <label for="expiryDate">Expiry Date:</label>
+    <input type="text" id="expiryDate" placeholder="MM/YY" />
+    <label for="cvv">CVV:</label>
+    <input type="number" id="cvv" placeholder="CVV" />
+    <button class="pay-btn" id="payNowBtn">Pay Now</button>
+  </div>
+
+  <script>
+    // Cart management using localStorage
+    const cartKey = 'shoppingCart';
+
+    function getCart() {
+      const cart = localStorage.getItem(cartKey);
+      return cart ? JSON.parse(cart) : [];
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      const tbody = document.querySelector('#cartTable tbody');
+      const emptyMessage = document.getElementById('emptyMessage');
+      const paymentSection = document.getElementById('paymentSection');
+      tbody.innerHTML = '';
+
+      if (cart.length === 0) {
+        emptyMessage.style.display = 'block';
+        paymentSection.style.display = 'none';
+        return;
+      } else {
+        emptyMessage.style.display = 'none';
+        paymentSection.style.display = 'block';
+      }
+
+      cart.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.description}</td>
+          <td class="price">$${item.price.toFixed(2)}</td>
+          <td><input type="number" min="1" value="${item.quantity}" data-index="${index}" class="qty-input" /></td>
+          <td><button class="remove-btn" data-index="${index}">Remove</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Add event listeners for quantity change and remove buttons
+      document.querySelectorAll('.qty-input').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const idx = e.target.getAttribute('data-index');
+          let val = parseInt(e.target.value);
+          if (isNaN(val) || val < 1) val = 1;
+          const cart = getCart();
+          cart[idx].quantity = val;
+          saveCart(cart);
+          renderCart();
+        });
+      });
+
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.target.getAttribute('data-index');
+          const cart = getCart();
+          cart.splice(idx, 1);
+          saveCart(cart);
+          renderCart();
+        });
+      });
+    }
+
+    document.getElementById('payNowBtn').addEventListener('click', () => {
+      alert('Payment processing is not implemented in this demo.');
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.location.href = 'mens_wear.html';
+    });
+
+    // On page load
+    renderCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smatter Institution Signup</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Smatter Institution Signup</h1>
+        <form @submit.prevent="submitForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" required />
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" v-model="password" required />
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" required />
+
+            <button type="submit">Sign Up</button>
+        </form>
+        <p v-if="message" :class="{'error': error, 'success': !error}">{{ message }}</p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

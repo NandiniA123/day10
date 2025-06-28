@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+      padding: 2rem;
+      text-align: center;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    button {
+      background-color: #dc3545;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #c82333;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    .profile-info {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .profile-info p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button id="logoutBtn">Logout</button>
+    <button id="backBtn" style="margin-left: auto; margin-right: 1rem; background-color: #007bff; border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Back</button>
+  </header>
+  <h1>User Profile</h1>
+  <div class="profile-info" id="profileInfo">
+    <form id="profileForm">
+      <label for="name">Name:</label><br/>
+      <input type="text" id="name" name="name" required /><br/><br/>
+      
+      <label for="gender">Gender:</label><br/>
+      <select id="gender" name="gender" required>
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select><br/><br/>
+      
+      <label for="photoUrl">Photo URL:</label><br/>
+      <input type="url" id="photoUrl" name="photoUrl" /><br/><br/>
+      
+      <label for="address">Delivery Address:</label><br/>
+      <textarea id="address" name="address" rows="3" required></textarea><br/><br/>
+      
+      <button type="submit">Save Profile</button>
+    </form>
+    <div id="profileDisplay" style="display:none;">
+      <h3>Profile Details</h3>
+      <p><strong>Name:</strong> <span id="displayName"></span></p>
+      <p><strong>Gender:</strong> <span id="displayGender"></span></p>
+      <p><strong>Photo:</strong><br/><img id="displayPhoto" src="" alt="Profile Photo" style="max-width: 150px; border-radius: 8px;" /></p>
+      <p><strong>Delivery Address:</strong> <span id="displayAddress"></span></p>
+      <button id="editProfileBtn">Edit Profile</button>
+    </div>
+    <div id="message"></div>
+  </div>
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <!-- Firebase Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <script>
+      const firebaseConfig = {
+    apiKey: "AIzaSyCkKbpaSIvahjrX6FAKL8FwxFs4XdxqDhU",
+    authDomain: "shopping-acdb6.firebaseapp.com",
+    projectId: "shopping-acdb6",
+    storageBucket: "shopping-acdb6.firebasestorage.app",
+    messagingSenderId: "474724595835",
+    appId: "1:474724595835:web:c68e3f315c5736f14a4ade",
+    measurementId: "G-G939567N5D"
+  };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    const profileForm = document.getElementById('profileForm');
+    const messageDiv = document.getElementById('message');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const profileDisplay = document.getElementById('profileDisplay');
+    const displayName = document.getElementById('displayName');
+    const displayGender = document.getElementById('displayGender');
+    const displayPhoto = document.getElementById('displayPhoto');
+    const displayAddress = document.getElementById('displayAddress');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const userRef = database.ref('users/' + user.uid);
+        userRef.once('value').then(snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            profileForm.name.value = data.name || '';
+            profileForm.gender.value = data.gender || '';
+            profileForm.photoUrl.value = data.photoUrl || '';
+            profileForm.address.value = data.address || '';
+            // Show profile display and hide form
+            profileForm.style.display = 'none';
+            displayName.textContent = data.name || '';
+            displayGender.textContent = data.gender || '';
+            displayAddress.textContent = data.address || '';
+            if (data.photoUrl) {
+              displayPhoto.src = data.photoUrl;
+              displayPhoto.style.display = 'block';
+            } else {
+              displayPhoto.style.display = 'none';
+            }
+            profileDisplay.style.display = 'block';
+          } else {
+            profileForm.style.display = 'block';
+            profileDisplay.style.display = 'none';
+          }
+        });
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+
+    profileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const profileData = {
+        name: profileForm.name.value.trim(),
+        gender: profileForm.gender.value,
+        photoUrl: profileForm.photoUrl.value.trim(),
+        address: profileForm.address.value.trim()
+      };
+      const userRef = database.ref('users/' + user.uid);
+      userRef.set(profileData)
+        .then(() => {
+          messageDiv.textContent = 'Profile saved successfully!';
+          messageDiv.style.color = 'green';
+          // Hide form and show profile display
+          profileForm.style.display = 'none';
+          displayName.textContent = profileData.name;
+          displayGender.textContent = profileData.gender;
+          displayAddress.textContent = profileData.address;
+          if (profileData.photoUrl) {
+            displayPhoto.src = profileData.photoUrl;
+            displayPhoto.style.display = 'block';
+          } else {
+            displayPhoto.style.display = 'none';
+          }
+          profileDisplay.style.display = 'block';
+        })
+        .catch((error) => {
+          messageDiv.textContent = 'Error saving profile: ' + error.message;
+          messageDiv.style.color = 'red';
+        });
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    });
+
+    editProfileBtn.addEventListener('click', () => {
+      profileForm.style.display = 'block';
+      profileDisplay.style.display = 'none';
+      messageDiv.textContent = '';
+    });
+    </script>
+    <script>
+      document.getElementById('backBtn').addEventListener('click', () => {
+        window.history.back();
+      });
+    </script>
+  </body>
+</html>
