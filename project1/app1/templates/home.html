@@ -1,0 +1,37 @@
+{% load static %}
+<html>
+<head>
+<link rel="stylesheet" href="{% static 'css/mystyle.css' %}">
+<script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+<h1>WELCOME TO OUR HOME PAGE</h1>
+<img src="{% static 'img/college.jpg' %}">
+<h1>MOTHER THERESA INSTITUTE OF COMPUTER APPLICATION</h1>
+<table border=0>
+<tr>
+<th align=left>First Number:</th>
+<td><input id="textFirstNumber"></td>
+</tr>
+<tr>
+<th align=left>Second Number:</th>
+<td><input id="textSecondNumber"></td>
+</tr>
+<tr>
+<th align=left>=</th>
+<td><input id="textAnswer"></td>
+</tr>
+<tr>
+<td align=center><button onclick="add()">+</button></td>
+<td align=center><button onclick="sub()">-</button></td>
+<td align=center><button onclick="mul()">*</button></td>
+<td align=center><button onclick="div()">/</button></td>
+<td align=center><button onclick="per()">%</button></td>
+<td align=center><button onclick="clearScreen()">Clear Them</button></td>
+</tr>
+</table>
+<label for="nameInput">Enter your name</label>
+<input type="text" id="nameInput" oninput="showGreeting()">
+<p id="greeting">Hello !</p>
+</body>
+</html>
